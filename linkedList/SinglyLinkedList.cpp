@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 struct node
 {
@@ -109,6 +110,7 @@ public:
             {
                 node *temp = current->next->next;
                 free(current->next);
+                current->next = NULL;
                 current->next = temp;
             }
         }
@@ -122,9 +124,87 @@ public:
         {
             temp = current->next;
             free(current);
+            current = NULL;
             current = temp;
         }
         free(head);
+        head = NULL;
+    }
+
+    void modularNodeLastFromBeginning(int k) {
+        int i = 1;
+        node *modularNode = NULL;
+        for(node *temp = head; temp != NULL; temp = temp->next) {
+            if(i%k == 0) {
+                modularNode = temp;
+            }
+            i++;
+        }
+        cout << "Last Modular node from the beginning: " << modularNode->value << "\n";
+    }
+
+    void modularNodeFromEnd(int k) {
+        int i = 0;
+        node *modularNode = head;
+        node *fastPtr = head;
+        while(i < k) {
+            fastPtr = fastPtr->next;
+            i++;
+        }
+       while(fastPtr != NULL) {
+            modularNode = modularNode->next;
+            fastPtr = fastPtr->next;
+        }
+        
+        cout << "First Modular node from the end: " << modularNode->value << "\n";
+    }
+
+    void fractionalNode(int k) {
+        node *slowPtr = head;
+        node *fastPtr = head;
+        int i = 1;
+        while(fastPtr != NULL) {
+            if(i % k == 0)
+                slowPtr = slowPtr->next;
+            fastPtr = fastPtr->next;
+            i++;
+        }
+        cout << k << "th Fractional node :" << slowPtr->value << "\n";
+    }
+
+    void evenBeforeOdd() {
+        node *odd = NULL;
+        node *even = NULL;
+        node *current = head;
+        node *end = head;
+        while(end->next != NULL) {
+            end = end->next;
+        }
+        node *temp = end;
+        while(current != end && current->value % 2 != 0) {
+            temp->next = current;
+            current = current->next;
+            temp->next->next = NULL;
+            temp = temp->next;
+        }
+
+        if(current->value % 2 == 0) {
+            head = current;
+            node *prev = current;
+            while(current != end) {
+                if(current->value % 2 == 0) {
+                    prev = current;
+                    current = current->next;
+                }
+                else {
+                    temp->next = current;
+                    prev->next = current->next;
+                    current->next = NULL;
+                    current = prev->next;
+                    temp = temp->next;
+                }
+            }
+        }
     }
 };
 
@@ -135,11 +215,25 @@ int main()
     numbers.addNode(1);
     numbers.addNode(2);
     numbers.addNode(4);
+    numbers.addNode(5);
+    numbers.addNode(6);
+    numbers.addNode(7);
+    numbers.addNode(8);
+    numbers.addNode(9);
+    numbers.addNode(10);
+    numbers.addNode(11);
+    numbers.addNode(12);
     numbers.printList();
     numbers.addInSortedOrder(3);
     numbers.addInSortedOrder(0);
     numbers.printList();
     cout << "Length of the list: " << numbers.listLength() << "\n";
+    numbers.modularNodeLastFromBeginning(3);
+    numbers.modularNodeFromEnd(3);
+    numbers.fractionalNode(2);
+    numbers.fractionalNode(3);
+    numbers.evenBeforeOdd();
+    numbers.printList();
     numbers.deleteNodeN(3);
     numbers.printList();
     numbers.deleteNodeN(0);
